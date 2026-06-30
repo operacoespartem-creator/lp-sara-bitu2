@@ -27,19 +27,21 @@ export function WordsPullUp({
   return (
     <span ref={ref} className={className}>
       {words.map((w, i) => (
-        <span key={i} className="inline-block overflow-hidden align-bottom">
-          <motion.span
-            className="relative inline-block"
-            initial={{ y: 26, opacity: 0 }}
-            animate={inView ? { y: 0, opacity: 1 } : {}}
-            transition={{ duration: 0.7, delay: delay + i * 0.08, ease: EASE }}
-          >
-            {w}
-            {i < words.length - 1 ? "\u00A0" : ""}
-            {showAsterisk && i === words.length - 1 && (
-              <sup className="absolute top-[0.65em] -right-[0.3em] text-[0.31em] text-gold">*</sup>
-            )}
-          </motion.span>
+        <span key={i} className="inline">
+          <span className="inline-block overflow-hidden align-bottom">
+            <motion.span
+              className="relative inline-block"
+              initial={{ y: 26, opacity: 0 }}
+              animate={inView ? { y: 0, opacity: 1 } : {}}
+              transition={{ duration: 0.7, delay: delay + i * 0.08, ease: EASE }}
+            >
+              {w}
+              {showAsterisk && i === words.length - 1 && (
+                <sup className="absolute top-[0.65em] -right-[0.3em] text-[0.31em] text-gold">*</sup>
+              )}
+            </motion.span>
+          </span>
+          {i < words.length - 1 ? " " : ""}
         </span>
       ))}
     </span>
@@ -95,10 +97,11 @@ function AnimatedLetter({
   range: [number, number];
 }) {
   const opacity = useTransform(progress, range, [0.18, 1]);
-  return (
-    <motion.span style={{ opacity }}>
-      {char === " " ? "\u00A0" : char}
-    </motion.span>
+  // espaço normal (quebrável) — NBSP impedia a quebra de linha e estourava no mobile
+  return char === " " ? (
+    <span> </span>
+  ) : (
+    <motion.span style={{ opacity }}>{char}</motion.span>
   );
 }
 
